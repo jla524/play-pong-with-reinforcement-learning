@@ -1,27 +1,30 @@
 # Reinforcement learning with pong
 
-cmpt-419 term project
+Term Project for Special Topics in Artificial Intelligence (CMPT 419)
 
-contributors: Jacky Lee, John Liu
+Contributors: Jacky Lee, John Liu
 
 ## Instructions to run
-First clone this repository
+1. Clone this repository
+
+2. Install the required dependencies in a virtual environment
 ```bash
-https://github.com/bk202/Play_pong_with_reinforcement_learning.git
-cd Play_pong_with_reinforcement_learning
-```
-Install the required dependencies in a virtual environment
-```bash
-python3 -m venv venv
-source venv/bin/activate
+python3 -m venv env
+source env/bin/activate
 pip install -r requirements.txt
 ```
-Start training the agent with the command
+
+3. Start training your agent against pygame's agent
 ```
 python3 main.py train
 ```
-Or inference the model to play the game
+   Note that these games are sped up, and your agent (on the right hand) usually loses 20-0 at the start
+
+4. After a few hours of training, your agent will get better at playing the game
+
+You can check the agent's progress by playing the game in regular speed
 ```
 python3 main.py inference
 ```
-To exit the virtual environment, enter `deactivate` in the command line.
+
+5. To exit the virtual environment, enter `deactivate` in the command line
