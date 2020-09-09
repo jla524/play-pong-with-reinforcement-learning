@@ -20,9 +20,9 @@ python3 main.py train
 ```
    Note that these games are sped up, and your agent (on the right hand) usually loses 20-0 at the start
 
-4. After a few hours of training, your agent will get better at playing the game
+4. As the training continues, your agent will start to score against its opponent
 
-You can check the agent's progress by playing the game in regular speed
+You can test the agent's progress by playing the game without training it 
 ```
 python3 main.py inference
 ```
