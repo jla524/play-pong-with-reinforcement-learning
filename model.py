@@ -1,10 +1,10 @@
-import tensorflow.compat.v1 as tf
-tf.disable_v2_behavior()
-
-tf.logging.set_verbosity(tf.logging.ERROR)
-
 import os
 import numpy as np
+import tensorflow.compat.v1 as tf
+
+tf.disable_v2_behavior()
+tf.logging.set_verbosity(tf.logging.ERROR)
+
 
 class Model(object):
     def __init__(self, observation_size, env):
@@ -37,12 +37,14 @@ class Model(object):
 
         self.load_model()
 
+
     def inputs(self):
         with tf.variable_scope('input', reuse=tf.AUTO_REUSE):
             # shape = [batch size, observation size]
             self.states = tf.placeholder(tf.float32, shape=(None, self.observation_size), name='states')
             self.actions = tf.placeholder(tf.float32, shape=(None, 1), name='actions')
             self.rewards = tf.placeholder(tf.float32, shape=(None, 1), name='rewards')
+
 
     def loss_acc(self):
         with tf.variable_scope('loss_acc', reuse=tf.AUTO_REUSE):
@@ -52,12 +54,6 @@ class Model(object):
             discourage the action by multiplying action with reward, otherwise action is encouraged.
             
             '''
-
-            # self.loss = tf.losses.log_loss(
-            #     labels=self.actions,
-            #     predictions=self.network,
-            #     weights=self.rewards
-            # )
 
             self.epsilon = 1e-7
             self.loss = tf.reduce_mean(
@@ -73,25 +69,25 @@ class Model(object):
 
         with tf.variable_scope('{}'.format(name), reuse=tf.AUTO_REUSE):
             # fc layer 2
-            fc2 = tf.layers.dense(input,
-                                  self.num_nodes[0],
+            fc2 = tf.layers.dense(input, self.num_nodes[0],
                                   activation=tf.nn.relu,
                                   kernel_initializer=tf.keras.initializers.glorot_normal(),
                                   name='{}_fc_2'.format(name))
 
             # output layer
-            output = tf.layers.dense(fc2,
-                                     self.num_nodes[-1],
+            output = tf.layers.dense(fc2, self.num_nodes[-1],
                                      activation=tf.nn.sigmoid,
                                      kernel_initializer=tf.keras.initializers.glorot_uniform(),
                                      name='{}_output'.format(name))
 
             return output
 
+
     def save_model(self, steps):
         print('Saving checkpoints...')
         ckpt_file = os.path.join(self.check_point_dir, self.model_name)
         self.saver.save(self.sess, ckpt_file, global_step=self.global_step)
+
 
     def load_model(self):
         print('Loading checkpoints...')
@@ -101,27 +97,23 @@ class Model(object):
         if ckpt_path:
             self.saver.restore(self.sess, ckpt_path)
             print('Load model success!')
-
             self.current_step = self.global_step.eval(session=self.sess)
             print('Model restored at step {}'.format(self.current_step))
-            return True
         else:
             print('Load model failure')
-            return False
+        return ckpt_path
+
 
     def scope_vars(self, name):
         collection = tf.GraphKeys.TRAINABLE_VARIABLES
         variables = tf.get_collection(collection, scope=name)
         return variables
 
+
     def observable_to_input(self, state):
         return state.flatten()
 
+
     def return_action(self, state, epsilon=0.1):
         up_probability = self.network.eval({self.states: state.reshape(1, -1)})[0]
-
-        if np.random.uniform() < up_probability:
-            return 2
-        else:
-            return 3
-
+        return 2 if np.random.uniform() < up_probability else 3
